@@ -1,0 +1,114 @@
+Source: ruby-rspec
+Section: ruby
+Priority: optional
+Maintainer: Debian Ruby Team <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
+Uploaders: Cédric Boutillier <boutil@debian.org>
+Build-Depends: coderay,
+               debhelper-compat (= 12),
+               gem2deb (>= 1),
+               git,
+               ruby-aruba,
+               ruby-childprocess,
+               ruby-diff-lcs,
+               ruby-fakefs,
+               ruby-flexmock,
+               ruby-json,
+               ruby-minitest,
+               ruby-mocha,
+               ruby-nokogiri,
+               ruby-rr,
+               ruby-thread-order
+Standards-Version: 4.6.0
+Vcs-Git: https://salsa.debian.org/ruby-team/ruby-rspec.git
+Vcs-Browser: https://salsa.debian.org/ruby-team/ruby-rspec
+Homepage: https://rspec.info/
+Testsuite: autopkgtest-pkg-ruby
+XS-Ruby-Versions: all
+Rules-Requires-Root: no
+
+Package: ruby-rspec
+Architecture: all
+X-DhRuby-Root: rspec
+XB-Ruby-Versions: ${ruby:Versions}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ruby-rspec-core (= ${binary:Version}),
+         ruby-rspec-expectations (= ${binary:Version}),
+         ruby-rspec-mocks (= ${binary:Version}),
+Breaks: ruby-rspec-collection-matchers (<< 1.2.0),
+        ruby-rspec-rails (<< 4.0.0~),
+Description: Behaviour Driven Development framework for Ruby - metapackage
+ RSpec is a Behaviour Driven Development framework for Ruby. It
+ provides a framework for writing and executing examples of how your
+ Ruby application should behave.
+
+Package: ruby-rspec-core
+Architecture: all
+X-DhRuby-Root: rspec-core
+XB-Ruby-Versions: ${ruby:Versions}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ruby,
+         ruby-rspec-support (= ${binary:Version}),
+Breaks: ruby-rspec-rails (<< 4.0.0~),
+Suggests: ruby-rspec
+Description: Behaviour Driven Development framework for Ruby - core
+ RSpec is a Behaviour Driven Development framework for Ruby. It
+ provides a framework for writing and executing examples of how your
+ Ruby application should behave.
+ .
+ This package provides the core of the RSpec framework.
+
+Package: ruby-rspec-expectations
+Architecture: all
+X-DhRuby-Root: rspec-expectations
+XB-Ruby-Versions: ${ruby:Versions}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ruby-rspec-support (= ${binary:Version}),
+         ruby-diff-lcs,
+Breaks: ruby-rspec-rails (<< 4.0.0~),
+Suggests: ruby-rspec
+Description: Behaviour Driven Development framework for Ruby - expectations
+ RSpec is a Behaviour Driven Development framework for Ruby. It
+ provides a framework for writing and executing examples of how your
+ Ruby application should behave.
+ .
+ This package provides the handling of expectations (should/should_not and
+ matchers).
+
+Package: ruby-rspec-mocks
+Architecture: all
+X-DhRuby-Root: rspec-mocks
+XB-Ruby-Versions: ${ruby:Versions}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ruby-rspec-support (= ${binary:Version}),
+         ruby-diff-lcs,
+Breaks: ruby-rspec-rails (<< 4.0.0~),
+Suggests: ruby-rspec
+Description: Behaviour Driven Development framework for Ruby - mocks
+ RSpec is a Behaviour Driven Development framework for Ruby. It
+ provides a framework for writing and executing examples of how your
+ Ruby application should behave.
+ .
+ This package provides support for stubbing and mocking.
+
+Package: ruby-rspec-support
+Architecture: all
+X-DhRuby-Root: rspec-support
+XB-Ruby-Versions: ${ruby:Versions}
+Depends: ${ruby:Depends},
+         ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: ruby-rspec-rails (<< 4.0.0~),
+Suggests: ruby-rspec
+Multi-Arch: foreign
+Description: Behaviour Driven Development framework for Ruby - support
+ RSpec is a Behaviour Driven Development framework for Ruby. It
+ provides a framework for writing and executing examples of how your
+ Ruby application should behave.
+ .
+ This package provides common functionality to other
+ rspec packages. It is considered suitable for internal
+ use only at this time.

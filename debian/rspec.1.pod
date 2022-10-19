@@ -1,0 +1,161 @@
+=encoding UTF-8
+
+=head1 NAME
+
+rspec - standalone test runner for Ruby RSpec test suites
+
+=head1 SYNOPSYS
+
+B<rspec> [I<options>] [I<files or directories>]
+
+=head1 DESCRIPTION
+
+The Ruby script B<rspec> allows you to run tests written with RSpec, a testing
+tool for Ruby, from the command line. When run without arguments, B<rspec>
+finds automatically all the spec files of your projects, and runs them. It is
+possible to restrict the tests to a subset by specifying the names of
+particular spec files or by using some of the filtering options.
+
+Various options can be passed to B<rspec> to modify the output of the tests, or
+the way the tests are run.
+
+=head1 OPTIONS
+
+=over
+
+=item B<-I> I<PATH>
+
+Specify PATH to add to $LOAD_PATH (may be used more than once).
+
+=item B<-r>, B<--require> I<PATH>
+
+Require a file.
+
+=item B<-O>, B<--options> I<PATH>
+
+Specify the path to a custom options file.
+
+=item B<--order> I<TYPE>[:I<SEED>]
+
+Run examples by the specified order type. I<TYPE> can be either B<default>, for which 
+files are ordered based on the underlying file system's order, or B<rand>, for which 
+the order of files, groups and examples is randomized. B<random> is an alias
+for B<rand>. A I<SEED> can be indicated for the B<random> type, e.g. B<--order>
+B<random>:123
+
+=item     B<--seed> I<SEED>
+
+Equivalent of B<--order> B<rand>:I<SEED>.
+
+=item B<-d>, B<--debugger>
+
+Enable debugging.
+
+=item B<--fail-fast>
+
+Abort the run on first failure.
+
+=item B<--failure-exit-code> I<CODE>
+
+Override the exit code used when there are failing specs.
+
+=item B<-X>, B<-->[B<no->]B<drb>
+
+Run examples via DRb.
+
+=item B<--drb-port> I<PORT>
+
+Port to connect to the DRb server.
+
+=item B<--init>
+
+Initialize your project with RSpec.
+
+=item B<--configure>
+
+Deprecated. Use B<--init> instead.
+
+=back
+
+=head1 OUTPUT OPTIONS
+
+=over
+
+=item B<-f>, B<--format> I<FORMATTER>
+
+Choose a formatter. The various choices are [B<p>]B<rogress> (default - dots),
+[B<d>]B<ocumentation> (group and example names), [B<h>]B<tml>, [B<t>]B<extmate>
+or a custom formatter class name.
+
+=item B<-o>, B<--out> I<FILE>
+
+Write output to a file instead of STDOUT. This option applies
+to the previously specified B<--format>, or the default format
+if no format is specified.
+
+=item B<-b>, B<--backtrace>
+
+Enable full backtrace.
+
+=item B<-c>, B<-->[B<no->]B<color>, B<-->[B<no->]B<colour>
+
+Enable color in the output.
+
+=item B<-p>, B<--profile>
+
+Enable profiling of examples and list 10 slowest examples.
+
+=back
+
+=head1 FILTERING AND TAG OPTIONS
+
+In addition to the following options for selecting specific files, groups,
+or examples, you can select a single example by appending the line number to
+the filename:
+
+      rspec path/to/a_spec.rb:37
+
+=over
+
+=item B<-P>, B<--pattern> I<PATTERN>
+
+Load files matching pattern (default: "spec/**/*_spec.rb").
+
+=item B<-e>, B<--example> I<STRING>
+
+Run examples whose full nested names include I<STRING>.
+
+=item B<-l>, B<--line_number> I<LINE>
+
+Specify line number of an example or group (may be used more than once).
+
+=item B<-t>, B<--tag> I<TAG>[:I<VALUE>]
+
+Run examples with the specified tag, or exclude examples by adding ~ before the
+tag, e.g. ~slow.  I<TAG> is always converted to a symbol.
+
+=item B<--default_path> I<PATH>
+
+Set the default path where RSpec looks for examples (can be a path to a file or
+a directory).
+
+=back
+
+=head1 UTILITY OPTIONS
+
+=over
+
+=item B<-v>, B<--version>
+
+Display the version.
+
+=item B<-h>, B<--help>
+
+Display a message similar to this manpage.
+
+=back
+
+=head1 AUTHORS
+
+This man page inspired by the help message of B<rspec>, has been written by
+Cédric Boutillier for the Debian Project, but may be used by others.

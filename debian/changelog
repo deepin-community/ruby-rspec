@@ -1,0 +1,391 @@
+ruby-rspec (3.10.0c1e1m2s3-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 3.10.0c1e1m2s3
+  * Refresh patches; drop patches applied upstream:
+    - 0002-rspec-support-fix-tests-against-diff-lcs-1.4.4.patch
+    - 0003-rspec-expectations-fix-tests-against-diff-cs-1.4.4.patch
+    - 0004-rspec-mocks-fix-tests-against-diff-lcs-1.4.4.patch
+  * Bump Standards-Version to 4.6.0; no changes needed
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 15 Nov 2021 08:49:59 -0300
+
+ruby-rspec (3.9.0c2e2m1s3-2) unstable; urgency=medium
+
+  * debian/rules: force an UTF-8 locale during the build (Closes: #981850)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 14 Feb 2021 13:52:45 -0300
+
+ruby-rspec (3.9.0c2e2m1s3-1) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use secure copyright file specification URI.
+  * Use secure URI in Homepage field.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit.
+
+  [ Antonio Terceiro ]
+  * New upstream version 3.9.0c2e2m1s3
+  * Add patches to fix tests against diff-lcs 1.4.4 (Closes: #967015, #968629)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 24 Sep 2020 18:11:04 -0300
+
+ruby-rspec (3.9.0c1e0m1s2-1) unstable; urgency=medium
+
+  * Team upload
+  [ Utkarsh Gupta ]
+  * Add salsa-ci.yml
+
+  [ Antonio Terceiro ]
+  * New upstream version 3.9.0c1e0m1s2
+  * Drop all patches
+  * debian/ruby-tests.rb: call out to rspec, and use an exclude list
+  * debian/rules: install using the rubygems layout
+  * debian/ruby-tests.rb: print banner for each test suite
+  * debian/rules: drop dh_override_auto_install, now unnecessary
+  * debian/ruby-tests.rb: workaround presend of old version using vendor layout
+  * debian/rules: allow man/ to already exist
+  * debian/rules: ignore missing upstream changelogs
+  * debian/patches/0001-gemspecs-Drop-git-usage.patch: drop git usage from
+    gemspecs
+  * Refresh packaging files with a new run of dh-make-ruby
+    - Bump debhelper compat to 12 via debhelper-compat (= 12); drop
+      debian/compat
+    - Bump Standards-Version to 4.5.0; no changes needed otherwise
+    - Add Testsuite: field
+    - Add Rules-Requires-Root: no
+    - Drop dependencies on ruby | ruby-interpreter
+  * Add Breaks: on packages that fail with this new update:
+    - ruby-rspec-collection-matchers (<< 1.2.0),
+    - ruby-rspec-rails (<< 4.0.0~),
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 19 Feb 2020 18:38:27 -0300
+
+ruby-rspec (3.8.0c0e1m0s0-1) unstable; urgency=medium
+
+  * New upstream version 3.8.0c0e1m0s0
+  * Refresh failed_specs.patch
+      and disable_specs_assuming_they_are_first_caller.patch
+  * Drop ruby25_*.patch, applied upstream
+  * Use salsa.debian.org in Vcs-* fields
+  * Bump debhelper compatibility level to 11
+  * Bump Standards-Version to 4.2.1 (no changes needed)
+  * Move debian/watch to gemwatch.debian.net
+  * Exclude two failing tests related to bisect
+  * Refresh gemspecs for rspec 3.8.x
+  * Add a missing step in README.source about regenerating the gemspecs
+
+ -- Cédric Boutillier <boutil@debian.org>  Thu, 06 Sep 2018 23:39:06 +0200
+
+ruby-rspec (3.7.0c1e0m0s1-1) unstable; urgency=medium
+
+  * New upstream version 3.7.0c1e0m0s1
+  * Refresh patches and gemspecs
+  * Remove disable_coderay_highlight_specs.patch (patched file removed
+    upstream)
+  * Add upstream patches to fix tests with ruby2.5 (Closes: #889510)
+  * Bump Standards-Version to 4.1.3 (no changes needed)
+  * Delete leftover gemspec files in debian/ interfering with upstream ones
+  * Use DEB_VERSION_UPSTREAM in debian/rules instead of parsing the changelog
+
+ -- Cédric Boutillier <boutil@debian.org>  Mon, 05 Feb 2018 21:24:13 +0100
+
+ruby-rspec (3.5.0c3e0m0s0-1) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * New upstream release
+  * debian/README.source: simplify the instructions for updating to a new
+    upstream release
+  * refresh patches
+
+  [ Cédric Boutillier ]
+  * refresh failed_specs.patch: exclude more tests from rspec-core invocations
+  * debian/rules report:
+    + work around new uscan output
+    + properly report upstream version number as in Debian changelog
+  * remove obsolete require-rubygems.overrides
+  * Bump Standards-Version to 3.9.8 (no changes needed)
+
+ -- Cédric Boutillier <boutil@debian.org>  Mon, 03 Oct 2016 00:37:00 +0200
+
+ruby-rspec (3.4.0c3e0m1s1-1) unstable; urgency=medium
+
+  * Imported Upstream version 3.4.0c3e0m1s1
+  * patches
+    + refresh patches
+    + don't apply autorun-load-configuration.patch (fixed upstream)
+    + don't apply escape-path-in-match.patch (not needed)
+    + add patch to skip some specs failing with coderay 1.1.x
+    + skip specs using a running dRb server (stalling)
+    + fix encoding issue in rspec-core tests
+  * Remove coverage subdir in rspec-support and other _* files when cleaning
+  * Bump Standards-Version to 3.9.7 (no changes needed)
+  * Use https:// in Vcs-* fields
+  * Fix reporting of upstream versions due to new output of uscan
+
+ -- Cédric Boutillier <boutil@debian.org>  Wed, 02 Mar 2016 14:47:23 +0100
+
+ruby-rspec (3.3.0c2e1m2s0-1) unstable; urgency=medium
+
+  * Imported Upstream version 3.3.0c2e1m2s0
+  * Add a task to repack the source in a unique tarball
+  * Refresh gemspecs
+  * Do not clean anymore tmp/ subdir in rspec-mocks
+  * Skip another test related to UTF-16LE encoding on ruby2.2
+
+ -- Cédric Boutillier <boutil@debian.org>  Thu, 20 Aug 2015 12:07:11 +0200
+
+ruby-rspec (3.3.0c0e0m0s0-1) unstable; urgency=medium
+
+  * Upload to unstable
+  * New upstream version 3.3.0c0e0m0s0
+    - refresh gemspecs
+    - refresh patches
+  * comment more commands about previous git submodules approach
+  * Use a single tarball instead of a multiple tarball 3.0 (quilt) package
+    - remove create-empty-orig option
+    - update README.source accordingly
+  * Remove persistent statistics of specs under */spec/examples.txt when
+    cleaning
+  * fix fix-rake-task.patch
+  * Add failed_specs.patch to deactivate failing tests which need more
+    investigation
+  * Build-depend on git and coderay to satisfy some specs
+  * Depend and build-depend on ruby-thread-order
+  * Tighten version dependencies between RSpec components
+  * Install .rspec template in project_initializer to make rspec --init work.
+
+ -- Cédric Boutillier <boutil@debian.org>  Mon, 15 Jun 2015 09:43:22 +0200
+
+ruby-rspec (3.2.0c2e0m1s2-2.1) experimental; urgency=medium
+
+  Team upload.
+
+  [ Antonio Terceiro ]
+  * debian/patches/fix-rake-task.patch: fix path to rspec binary in rake
+    task. Closes: #782161
+
+  [ Christian Hofstaedtler ]
+  * debian/patches/autorun-load-configuration.patch: fix rspec/autorun
+    not honoring expose_dsl_globally default.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 09 Apr 2015 13:26:54 +0200
+
+ruby-rspec (3.2.0c2e0m1s2-2) experimental; urgency=medium
+
+  Team upload.
+
+  [ Lucas Nussbaum ]
+  * Remove myself from Uploaders.
+
+  [ Christian Hofstaedtler ]
+  * Depend on ruby-rspec-support where needed
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Thu, 09 Apr 2015 11:52:30 +0200
+
+ruby-rspec (3.2.0c2e0m1s2-1) experimental; urgency=low
+
+  [ Jérémy Bobbio ]
+  * Create ruby-rspec, ruby-rspec-core, ruby-rspec-expectations,
+    ruby-rspec-mocks and ruby-rspec-support from the same source package in
+    order to avoid the painful circular build dependencies needed to run the
+    tests. (Closes: #677955)
+    The new source package contains in separate folders the content of the old
+    ruby-rspec* source packages.
+
+  [ Cédric Boutillier ]
+  * New upstream version 3.2.x
+  * Update build-dependencies to build correctly all the rspec-packages
+  * Various patches to accommodate the new build setup
+  * Bump Standards-Version to 3.9.6 (no changes needed)
+  * Create a debian/README.source file to document the workflow
+
+ -- Cédric Boutillier <boutil@debian.org>  Thu, 02 Apr 2015 00:54:46 +0200
+
+ruby-rspec (2.14.1-1) unstable; urgency=low
+
+  * Imported Upstream version 2.14.1
+
+ -- Cédric Boutillier <boutil@debian.org>  Fri, 02 Aug 2013 17:35:27 +0200
+
+ruby-rspec (2.13.0-2) unstable; urgency=low
+
+  * Upload to unstable
+  * Update my email address in debian/control and debian/changelog
+  * Stop shipping transitional packages librspec-ruby*
+    + delete debian/source.lintian-overrides
+
+ -- Cédric Boutillier <boutil@debian.org>  Mon, 06 May 2013 15:17:24 +0200
+
+ruby-rspec (2.13.0-1) experimental; urgency=low
+
+  * Team upload.
+  * New upstream version.
+  * Update Depends to force upgrade of RSpec components.
+  * Switch to https in homepage.
+  * Remove obsolete DM-Upload-Allowed in debian/control.
+  * Bump Standards-Version to 3.9.4, no changes required.
+  * Update Vcs-* to use anonscm.d.o.
+
+ -- Jérémy Bobbio <lunar@debian.org>  Wed, 27 Mar 2013 17:28:09 +0100
+
+ruby-rspec (2.10.0-2) unstable; urgency=low
+
+  * Bump build dependency on gem2deb to >= 0.3.0~
+
+ -- Cédric Boutillier <cedric.boutillier@gmail.com>  Tue, 26 Jun 2012 23:33:59 +0200
+
+ruby-rspec (2.10.0-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Cédric Boutillier <cedric.boutillier@gmail.com>  Fri, 11 May 2012 14:51:57 +0200
+
+ruby-rspec (2.8.0-1) unstable; urgency=low
+
+  * New upstream version
+  * Add myself to Uploaders:
+  * Bump Standards-Version to 3.9.3 (no change needed)
+  * Set priority for transitional packages to extra
+  * Update DEP5 syntax and copyright information in debian/copyright
+  * Override lintian warning about duplicate descriptions for transitional
+    packages
+
+ -- Cédric Boutillier <cedric.boutillier@gmail.com>  Tue, 13 Mar 2012 22:05:27 +0300
+
+ruby-rspec (2.5.0-1) unstable; urgency=low
+
+  * Switch to gem2deb-based packaging and to a much more recent upstream
+    release.
+    Upstream package was split into rspec-{core,expectations,mocks}.
+
+ -- Lucas Nussbaum <lucas@lucas-nussbaum.net>  Tue, 26 Apr 2011 13:21:08 +0200
+
+librspec-ruby (1.3.1-2) unstable; urgency=low
+
+  * Updated debian/watch to only catch 1.x versions. RSpec2 will
+    be a separate package.
+
+ -- Tobias Grimm <etobi@debian.org>  Mon, 14 Feb 2011 22:14:20 +0100
+
+librspec-ruby (1.3.1-1) unstable; urgency=low
+
+  * New upstream release - This is a minor bugfix release before switching
+    to RSpec 2
+  * Dropped patches (fixed upstream):
+    - 14_ruby1.9.2-lambda.patch
+    - 16_ruby1.9.2-class-variable.patch
+
+ -- Tobias Grimm <etobi@debian.org>  Wed, 27 Oct 2010 01:32:12 +0200
+
+librspec-ruby (1.3.0-3) unstable; urgency=low
+
+  * Added support for Ruby 1.9.2 which introduced some breaking changes like no
+    '.' in the LOAD_PATH or requiring to pass blocks with a parameter to
+    instance_eval (Closes: #593020)
+  * Standards-Version: 3.9.1
+
+ -- Tobias Grimm <etobi@debian.org>  Tue, 17 Aug 2010 01:16:27 +0200
+
+librspec-ruby (1.3.0-2) unstable; urgency=low
+
+  * Fixed manpage creation by not including the current date in the diff
+    (Closes: #584385)
+
+ -- Tobias Grimm <etobi@debian.org>  Thu, 03 Jun 2010 13:40:25 +0200
+
+librspec-ruby (1.3.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Falling back to gemwatch for debian/watch, because the Rubyforge download
+    site hasn't been updated for months
+  * Standards-Version: 3.8.4
+  * Added Ruby 1.9.1 package
+  * Enabled tests depending on FakeFS
+  * source/format 3.0 (quilt)
+
+ -- Tobias Grimm <etobi@debian.org>  Sat, 29 May 2010 20:31:49 +0200
+
+librspec-ruby (1.2.9-1) unstable; urgency=low
+
+  * New upstream release
+  * Fixed debian/watch to recognize .rc versions
+  * Removed 12_differ-test-fix.dpatch - fixed upstream
+  * Added 13_skip-unsupported-tests.dpatch
+  * Added README note about unavailable syntax library
+  * Added README.source referring to dpatch's README.source
+  * Standards-Version: 3.8.3
+  * Force local inline cache dir during build (parsetree uses
+    libinline-ruby which on-the-fly compiles C code)
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 01 Nov 2009 11:17:07 +0100
+
+librspec-ruby (1.2.8-1) unstable; urgency=low
+
+  * New upstream release
+  * Added 12_differ-test-fix.dpatch (reported upstream as ticket #862)
+  * Increased standards version to 3.8.2
+  * Build-depend on rake (required to test the rake tasks)
+
+ -- Tobias Grimm <etobi@debian.org>  Sat, 25 Jul 2009 15:40:48 +0200
+
+librspec-ruby (1.2.6-1) unstable; urgency=low
+
+  * New upstream release
+  * Added Debian Ruby Extras Maintainers to list of uploaders
+  * Added package VCS links to debian/control
+  * Dropped 99_fix-html-and-textmate-output (fixed upstream)
+
+ -- Tobias Grimm <etobi@debian.org>  Sat, 02 May 2009 12:02:21 +0200
+
+librspec-ruby (1.2.4-1) unstable; urgency=low
+
+  * New upstream release (Closes: #521109)
+  * Dropped 20_fix-for-500625.dpatch - fixed upstream
+  * Changed section to 'ruby'
+  * Generate and install manpage for /usr/bin/spec
+  * Depend on `ruby1.8` instead of just `ruby`
+  * Run the tests in spec/spec during package build
+  * Updated 10-force-spec-binary-path.dpatch to fix the spec path in the
+    autotest plugin as well
+  * Added note about autotest to README.Debian
+  * Added 11_dont-require-rubygems.dpatch
+  * Added 99_fix-html-and-textmate-output.dpatch (a bugfix picked from the
+    upstream Git)
+  * Bumped standards version to 3.8.1
+  * Added Tobias Grimm <etobi@debian.org> to uploaders
+
+ -- Tobias Grimm <etobi@debian.org>  Tue, 21 Apr 2009 22:16:30 +0200
+
+librspec-ruby (1.1.12-1) unstable; urgency=low
+
+  * Upload entirely prepared by Tobias Grimm (etobi@debian.org); thank you
+    very much for all the quality improvements.
+  * New upstream release (Closes: #517694).
+  * Bumped debhelper dependency / compat to >= 5
+  * Using cdbs now
+  * Updated 20_fix-for-500625.dpatch
+  * Added debian/watch
+  * Added Homepage field to debian/control
+
+ -- Sebastien Delafond <seb@debian.org>  Fri, 06 Mar 2009 08:16:42 -0800
+
+librspec-ruby (1.1.3-3) unstable; urgency=low
+
+  * Put plugins, specs and stories in /usr/lib/ruby/1.8/spec/
+    (Closes: #500625).
+
+ -- Sebastien Delafond <seb@debian.org>  Mon, 29 Sep 2008 14:03:10 -0700
+
+librspec-ruby (1.1.3-2) unstable; urgency=low
+
+  * Force spec script path to /usr/bin/spec (Closes: #490729).
+  * Bump up policy version.
+
+ -- Sebastien Delafond <seb@debian.org>  Mon, 14 Jul 2008 14:55:09 -0700
+
+librspec-ruby (1.1.3-1) unstable; urgency=low
+
+  * Initial Release (Closes: #444623, #480441).
+
+ -- Sebastien Delafond <seb@debian.org>  Sat, 10 May 2008 19:26:47 -0700

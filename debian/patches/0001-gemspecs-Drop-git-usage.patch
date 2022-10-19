@@ -1,0 +1,87 @@
+From: Antonio Terceiro <terceiro@debian.org>
+Date: Fri, 7 Feb 2020 13:38:22 +0100
+Subject: gemspecs: Drop git usage
+
+---
+ rspec-core/rspec-core.gemspec                 | 4 ++--
+ rspec-expectations/rspec-expectations.gemspec | 2 +-
+ rspec-mocks/rspec-mocks.gemspec               | 2 +-
+ rspec-support/rspec-support.gemspec           | 2 +-
+ rspec/rspec.gemspec                           | 6 +++---
+ 5 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/rspec-core/rspec-core.gemspec b/rspec-core/rspec-core.gemspec
+index a778f04..69c9f0f 100644
+--- a/rspec-core/rspec-core.gemspec
++++ b/rspec-core/rspec-core.gemspec
+@@ -21,11 +21,11 @@ Gem::Specification.new do |s|
+     'source_code_uri'   => 'https://github.com/rspec/rspec-core',
+   }
+ 
+-  s.files            = `git ls-files -- lib/*`.split("\n")
++  s.files            = Dir.glob('lib/**/*', File::FNM_DOTMATCH)
+   s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
+   s.test_files       = []
+   s.bindir           = 'exe'
+-  s.executables      = `git ls-files -- exe/*`.split("\n").map{ |f| File.basename(f) }
++  s.executables      = Dir['exe/*'].map{ |f| File.basename(f) }
+   s.rdoc_options     = ["--charset=UTF-8"]
+   s.require_path     = "lib"
+ 
+diff --git a/rspec-expectations/rspec-expectations.gemspec b/rspec-expectations/rspec-expectations.gemspec
+index f4e7867..105aa30 100644
+--- a/rspec-expectations/rspec-expectations.gemspec
++++ b/rspec-expectations/rspec-expectations.gemspec
+@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
+     'source_code_uri'   => 'https://github.com/rspec/rspec-expectations',
+   }
+ 
+-  s.files            = `git ls-files -- lib/*`.split("\n")
++  s.files            = Dir.glob('lib/**/*', File::FNM_DOTMATCH)
+   s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
+   s.test_files       = []
+   s.rdoc_options     = ["--charset=UTF-8"]
+diff --git a/rspec-mocks/rspec-mocks.gemspec b/rspec-mocks/rspec-mocks.gemspec
+index 9fd5e9a..fd93b2c 100644
+--- a/rspec-mocks/rspec-mocks.gemspec
++++ b/rspec-mocks/rspec-mocks.gemspec
+@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
+     'source_code_uri'   => 'https://github.com/rspec/rspec-mocks',
+   }
+ 
+-  s.files            = `git ls-files -- lib/*`.split("\n")
++  s.files            = Dir.glob('lib/**/*', File::FNM_DOTMATCH)
+   s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
+   s.test_files       = []
+   s.rdoc_options     = ["--charset=UTF-8"]
+diff --git a/rspec-support/rspec-support.gemspec b/rspec-support/rspec-support.gemspec
+index c32cd57..eb83291 100644
+--- a/rspec-support/rspec-support.gemspec
++++ b/rspec-support/rspec-support.gemspec
+@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
+     'source_code_uri'   => 'https://github.com/rspec/rspec-support',
+   }
+ 
+-  spec.files         = `git ls-files -- lib/*`.split("\n")
++  spec.files            = Dir.glob('lib/**/*', File::FNM_DOTMATCH)
+   spec.files         += %w[README.md LICENSE.md Changelog.md]
+   spec.test_files    = []
+   spec.rdoc_options  = ["--charset=UTF-8"]
+diff --git a/rspec/rspec.gemspec b/rspec/rspec.gemspec
+index a3e7064..9bf1aed 100644
+--- a/rspec/rspec.gemspec
++++ b/rspec/rspec.gemspec
+@@ -21,10 +21,10 @@ Gem::Specification.new do |s|
+     'source_code_uri'   => 'https://github.com/rspec/rspec',
+   }
+ 
+-  s.files            = `git ls-files -- lib/*`.split("\n")
++  s.files            = Dir.glob('lib/**/*', File::FNM_DOTMATCH)
+   s.files           += ["LICENSE.md"]
+-  s.test_files       = `git ls-files -- {spec,features}/*`.split("\n")
+-  s.executables      = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
++  s.test_files       = Dir['{spec,features}/**/*']
++  s.executables      = Dir['bin/*'].map{ |f| File.basename(f) }
+   s.extra_rdoc_files = [ "README.md" ]
+   s.rdoc_options     = ["--charset=UTF-8"]
+   s.require_path     = "lib"

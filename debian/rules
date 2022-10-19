@@ -1,0 +1,120 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpkg/pkg-info.mk
+
+export GEM2DEB_TEST_RUNNER = --check-dependencies
+export DH_RUBY == --gem-install
+export LC_ALL = C.UTF-8
+
+MAJOR = $(word 1, $(subst ., ,$(DEB_VERSION_UPSTREAM)))
+MINOR = $(word 2, $(subst ., ,$(DEB_VERSION_UPSTREAM)))
+PATCHLEVEL = $(word 3, $(subst ., ,$(DEB_VERSION_UPSTREAM)))
+PATCHLEVEL_RSPEC = $(word 1, $(subst c, ,$(PATCHLEVEL)))
+PATCHLEVEL_RSPEC_CORE = $(word 2, $(subst e, ,$(subst c, ,$(PATCHLEVEL))))
+PATCHLEVEL_RSPEC_EXPECTATIONS = $(word 2, $(subst m, ,$(subst e, ,$(PATCHLEVEL))))
+PATCHLEVEL_RSPEC_MOCKS = $(word 2, $(subst s, ,$(subst m, ,$(PATCHLEVEL))))
+PATCHLEVEL_RSPEC_SUPPORT = $(word 2, $(subst s, ,$(PATCHLEVEL)))
+RSPEC_VERSION = $(MAJOR).$(MINOR).$(PATCHLEVEL_RSPEC)
+RSPEC_CORE_VERSION = $(MAJOR).$(MINOR).$(PATCHLEVEL_RSPEC_CORE)
+RSPEC_EXPECTATIONS_VERSION = $(MAJOR).$(MINOR).$(PATCHLEVEL_RSPEC_EXPECTATIONS)
+RSPEC_MOCKS_VERSION = $(MAJOR).$(MINOR).$(PATCHLEVEL_RSPEC_MOCKS)
+RSPEC_SUPPORT_VERSION = $(MAJOR).$(MINOR).$(PATCHLEVEL_RSPEC_SUPPORT)
+
+test:
+	@echo $(RSPEC_VERSION)
+	@echo $(RSPEC_CORE_VERSION)
+	@echo $(RSPEC_EXPECTATIONS_VERSION)
+	@echo $(RSPEC_MOCKS_VERSION)
+	@echo $(RSPEC_SUPPORT_VERSION)
+
+report:
+	@dh_testdir
+	@set -e && \
+	(echo rspec . $(RSPEC_VERSION); echo rspec-core c $(RSPEC_CORE_VERSION); echo rspec-expectations e $(RSPEC_EXPECTATIONS_VERSION); echo rspec-mocks m $(RSPEC_MOCKS_VERSION); echo rspec-support s $(RSPEC_SUPPORT_VERSION)) | { while read gem letter version; do \
+		new_version=$$(uscan --verbose --report --watch debian/$$gem.watch --upstream-version $$version | sed -n -e 's/uscan: Newest version .* on remote site is \([^,]*\), .*$$/\1/p'); \
+		[ "$$new_version" ] || new_version=$$version; \
+		if [ "$$new_major_minor" ]; then \
+			[ "$$new_major_minor" = "$${new_version%.*}" ] || { echo 'Major/minor version mismatch between gems!' >&2; exit 1; }; \
+		fi; \
+		new_major_minor="$${new_version%.*}"; \
+		new_patchlevel="$${new_version##*.}"; \
+		new_patchlevels="$$new_patchlevels$$letter$$new_patchlevel"; \
+	done; \
+	new_upstream_version="$$new_major_minor$$new_patchlevels"; \
+	echo "Newest version on remote site is $$new_upstream_version, local version is $(DEB_VERSION_UPSTREAM)"; \
+	if [ "$$new_upstream_version" = "$(DEB_VERSION_UPSTREAM)" ]; then \
+		echo " => Package is up to date"; \
+	else \
+		echo " => Newer versions available. Update debian/changelog and run 'debian/rules get-orig-sources'"; \
+	fi; \
+	}
+
+get-orig-sources:
+	dh_testdir
+	#git submodule init
+	#git submodule update --checkout
+	wget -O../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-rspec.tar.gz \
+		https://github.com/rspec/rspec/archive/v$(RSPEC_VERSION).tar.gz
+	#cd rspec && git fetch origin && git checkout v$(RSPEC_VERSION)
+	wget -O../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-rspec-core.tar.gz \
+		https://github.com/rspec/rspec-core/archive/v$(RSPEC_CORE_VERSION).tar.gz
+	#cd rspec-core && git fetch origin && git checkout v$(RSPEC_CORE_VERSION)
+	wget -O../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-rspec-expectations.tar.gz \
+		https://github.com/rspec/rspec-expectations/archive/v$(RSPEC_EXPECTATIONS_VERSION).tar.gz
+	#cd rspec-expectations && git fetch origin && git checkout v$(RSPEC_EXPECTATIONS_VERSION)
+	wget -O../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-rspec-mocks.tar.gz \
+		https://github.com/rspec/rspec-mocks/archive/v$(RSPEC_MOCKS_VERSION).tar.gz
+	#cd rspec-mocks && git fetch origin && git checkout v$(RSPEC_MOCKS_VERSION)
+	wget -O../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-rspec-support.tar.gz \
+		https://github.com/rspec/rspec-support/archive/v$(RSPEC_SUPPORT_VERSION).tar.gz
+	#cd rspec-support && git fetch origin && git checkout v$(RSPEC_SUPPORT_VERSION)
+
+gen-gemspecs:
+	# Let's create a static version of the gemspec as we don't build with git
+	ruby -rrubygems -rfileutils -e ' \
+		%w{rspec rspec-core rspec-expectations rspec-mocks rspec-support}.each do |gem| \
+			Dir.chdir(gem) do \
+				spec = Gem::Specification.load("#{gem}.gemspec"); \
+				File.write("#{gem}.gemspec.new", spec.to_ruby); \
+				FileUtils.mv("#{gem}.gemspec.new", "#{gem}.gemspec"); \
+			end; \
+		end \
+		'
+
+unpack-sources:
+	for x in rspec rspec-core rspec-expectations rspec-mocks rspec-support; do \
+		tar -C $$x -xzf ../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-$$x.tar.gz --strip-components=1; \
+		done
+
+repack-sources:
+	mkdir -p ruby-rspec_$(DEB_VERSION_UPSTREAM).orig
+	for x in rspec rspec-core rspec-expectations rspec-mocks rspec-support; do \
+		mkdir -p ruby-rspec_$(DEB_VERSION_UPSTREAM).orig/$$x; \
+		tar -C ruby-rspec_$(DEB_VERSION_UPSTREAM).orig/$$x -xzf ../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-$$x.tar.gz --strip-components=1; \
+		done
+	GZIP=--best tar -cz --owner root --group root --mode a+rX -f \
+        ../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig.tar.gz ruby-rspec_$(DEB_VERSION_UPSTREAM).orig
+	rm -rf ruby-rspec_$(DEB_VERSION_UPSTREAM).orig
+
+%:
+	dh $@ --buildsystem=ruby --with ruby
+
+override_dh_installman:
+	mkdir -p man
+	pod2man --center "" --release "" --name RSPEC --utf8 debian/rspec.1.pod man/rspec.1
+	dh_installman
+
+override_dh_auto_clean:
+	rm -rf rspec-core/tmp/
+	rm -rf rspec-expectations/coverage/
+	rm -rf rspec-mocks/coverage/
+	rm -rf rspec-support/coverage/
+	rm -f rspec-mocks/tmp/file_*
+	rm -rf rspec-*/spec/support/_*
+	rm -rf man/
+	dh_auto_clean
+
+override_dh_installchangelogs:
+	for x in rspec rspec-core rspec-expectations rspec-mocks rspec-support; do \
+		dh_installchangelogs -pruby-$$x $(wildcard $$x/Changelog.md); \
+	done

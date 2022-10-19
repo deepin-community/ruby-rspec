@@ -1,0 +1,58 @@
+This package is maintained in a Git repository on Alioth.
+
+It uses the Debian 3.0 (quilt) source format, with a single tarball.
+
+The upstream version has the following form: x.y.0c1e2m3s4-z
+x.y corresponds to the major/minor version of rspec.
+first number after x.y (0 in the example):
+  the number of the revision for rspec gem 
+number after c: revision for rspec-core
+number after e: revision for rspec-expectations
+number after m: revision for rspec-mocks
+number after s: revision for rspec-support
+
+
+The workflow for the moment is the following:
+
+
+detect a new upstream version
+-----------------------------
+
+No automatic centralized debian/watch (yet).
+use ./debian/rules report
+
+
+update to a new upstream version
+--------------------------------
+
+use the following targets from debian/rules to create the unified upstream
+tarball:
+
+- debian/rules get-orig-sources: 
+    download the several upstream tarballs
+- debian/rules repack-sources:
+    creates the unified tarball from the downloaded ones
+
+Then use `gbp import-orig` as you normally would.
+
+Then do:
+
+- quilt push
+
+  will push the first patch, which modifies the gemspecs
+
+- unapply it manually
+
+  `patch -R -p1 < debian/patches/gemspecs.patch`
+
+- debian/rules gen-gemspecs:
+    interpret upstream 'source' gemspec to real ones, with shell commands
+    (calls to git), and store replace the original ones
+
+- quilt refresh
+
+- then continue with `quilt push`, hack, `quilt refresh`, etc, until all the
+  patchs are refreshed.
+
+ -- Cédric Boutillier <boutil@debian.org> 2015-06-15
+ -- Antonio Terceiro <terceiro@debian.org> 2016-09-19
