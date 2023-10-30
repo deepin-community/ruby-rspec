@@ -1,6 +1,6 @@
 RSpec.describe "exist matcher" do
-  it_behaves_like "an RSpec matcher", :valid_value => Class.new { def exist?; true; end }.new,
-                                      :invalid_value => Class.new { def exist?; false; end }.new do
+  it_behaves_like "an RSpec value matcher", :valid_value => Class.new { def exist?; true; end }.new,
+                                            :invalid_value => Class.new { def exist?; false; end }.new do
     let(:matcher) { exist }
   end
 
@@ -123,6 +123,12 @@ RSpec.describe "exist matcher" do
       context 'File has deprecated exists?' do
         it 'will not call exists? triggering the warning' do
           expect(File).to exist __FILE__
+        end
+      end
+
+      context 'FileTest has deprecated exists?' do
+        it 'will not call exists? triggering the warning' do
+          expect(FileTest).to exist __FILE__
         end
       end
     end

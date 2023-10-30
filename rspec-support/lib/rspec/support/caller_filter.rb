@@ -25,7 +25,7 @@ module RSpec
     # when `CallerFilter.first_non_rspec_line` is called from the top level of a required
     # file, but it depends on if rubygems is loaded or not. We don't want to have to deal
     # with this complexity in our `RSpec.deprecate` calls, so we ignore it here.
-    IGNORE_REGEX = Regexp.union(LIB_REGEX, "rubygems/core_ext/kernel_require.rb")
+    IGNORE_REGEX = Regexp.union(LIB_REGEX, "rubygems/core_ext/kernel_require.rb", "<internal:")
 
     if RSpec::Support::RubyFeatures.caller_locations_supported?
       # This supports args because it's more efficient when the caller specifies
@@ -34,7 +34,7 @@ module RSpec
       # be found in a small number of stack frames from `skip_frames`.
       #
       # Note that there is a risk to passing a `skip_frames` value that is too high:
-      # If it skippped the first non-rspec line, then this method would return the
+      # If it skipped the first non-rspec line, then this method would return the
       # 2nd or 3rd (or whatever) non-rspec line. Thus, you generally shouldn't pass
       # values for these parameters, particularly since most places that use this are
       # not hot spots (generally it gets used for deprecation warnings). However,

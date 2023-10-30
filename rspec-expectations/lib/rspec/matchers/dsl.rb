@@ -40,6 +40,7 @@ module RSpec
           matcher.matcher_name = new_name if matcher.respond_to?(:matcher_name=)
           klass.new(matcher, description_override)
         end
+        ruby2_keywords new_name if respond_to?(:ruby2_keywords, true)
       end
 
       # Defines a negated matcher. The returned matcher's `description` and `failure_message`
@@ -122,7 +123,7 @@ module RSpec
         #
         # By default the match block will swallow expectation errors (e.g.
         # caused by using an expectation such as `expect(1).to eq 2`), if you
-        # with to allow these to bubble up, pass in the option
+        # wish to allow these to bubble up, pass in the option
         # `:notify_expectation_failures => true`.
         #
         # @param [Hash] options for defining the behavior of the match block.
@@ -151,7 +152,7 @@ module RSpec
         #
         # By default the match block will swallow expectation errors (e.g.
         # caused by using an expectation such as `expect(1).to eq 2`), if you
-        # with to allow these to bubble up, pass in the option
+        # wish to allow these to bubble up, pass in the option
         # `:notify_expectation_failures => true`.
         #
         # @param [Hash] options for defining the behavior of the match block.
@@ -401,6 +402,10 @@ module RSpec
         # must opt-in.
         def supports_block_expectations?
           false
+        end
+
+        def supports_value_expectations?
+          true
         end
 
         # Most matchers do not expect call stack jumps.

@@ -112,7 +112,7 @@ RSpec.describe "#include matcher" do
   end
 
   describe "expect(...).to include(with_one_arg)" do
-    it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
+    it_behaves_like "an RSpec value matcher", :valid_value => [1, 2], :invalid_value => [1] do
       let(:matcher) { include(2) }
     end
 
@@ -256,6 +256,7 @@ RSpec.describe "#include matcher" do
         it 'passes if the block yields the specified number of times' do
           expect([1, 2, 1]).to include(1).twice
           expect([10, 20, 30]).to include(a_value_within(5).of(17)).once
+          expect([{ 'a' => 1 }]).to include('a' => 1).once
         end
       end
 

@@ -13,14 +13,14 @@ module RSpec
           @recorded_customizations  = []
         end
 
-        [:with, :and_return, :and_throw, :and_raise, :and_yield, :and_call_original].each do |msg|
+        [:with, :and_return, :and_invoke, :and_throw, :and_raise, :and_yield, :and_call_original].each do |msg|
           define_method(msg) do |*args, &block|
             @recorded_customizations << ExpectationCustomization.new(msg, args, block)
             self
           end
         end
 
-        def name
+        def matcher_name
           "receive_message_chain"
         end
 

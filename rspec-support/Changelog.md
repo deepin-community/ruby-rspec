@@ -1,3 +1,25 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-support/compare/v3.12.0...3-12-maintenance)
+
+### 3.12.0 / 2022-10-26
+[Full Changelog](http://github.com/rspec/rspec-support/compare/v3.11.1...v3.12.0)
+Enhancements:
+
+* Add `RSpec::Support::RubyFeatures.distincts_kw_args_from_positional_hash?`
+  (Jean byroot Boussier, #535)
+
+### 3.11.1 / 2022-09-12
+[Full Changelog](http://github.com/rspec/rspec-support/compare/v3.11.0...v3.11.1)
+
+Bug Fixes:
+
+* Fix ripper detection on TruffleRuby. (Brandon Fish, #541)
+
+### 3.11.0 / 2022-02-09
+[Full Changelog](http://github.com/rspec/rspec-support/compare/v3.10.3...v3.11.0)
+
+No changes. Released to support other RSpec releases.
+
 ### 3.10.3 / 2021-11-03
 [Full Changelog](http://github.com/rspec/rspec-support/compare/v3.10.2...v3.10.3)
 

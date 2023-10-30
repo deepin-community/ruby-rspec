@@ -1,3 +1,27 @@
+require 'support/helper_methods'
+
+if RSpec::Support::Ruby.jruby? && RSpec::Support::Ruby.jruby_version == "9.1.17.0"
+  # A regression appeared in require_relative in JRuby 9.1.17.0 where require some
+  # how ends up private, this monkey patch uses `send`
+  module Kernel
+    module_function
+      def require_relative(relative_arg)
+        relative_arg = relative_arg.to_path if relative_arg.respond_to? :to_path
+        relative_arg = JRuby::Type.convert_to_str(relative_arg)
+
+        caller.first.rindex(/:\d+:in /)
+        file = $` # just the filename
+        raise LoadError, "cannot infer basepath" if /\A\((.*)\)/ =~ file # eval etc.
+
+        absolute_feature = File.expand_path(relative_arg, File.dirname(File.realpath(file)))
+
+        # This was the orginal:
+        # ::Kernel.require absolute_feature
+        ::Kernel.send(:require, absolute_feature)
+      end
+  end
+end
+
 module ArubaLoader
   extend RSpec::Support::WithIsolatedStdErr
   with_isolated_stderr do
@@ -7,6 +31,7 @@ end
 
 RSpec.shared_context "aruba support" do
   include Aruba::Api
+  include RSpecHelpers
   let(:stderr) { StringIO.new }
   let(:stdout) { StringIO.new }
 
@@ -47,13 +72,6 @@ RSpec.shared_context "aruba support" do
     # strip extra indentation.
     formatted_contents = unindent(contents.sub(/\A\n/, ""))
     write_file file_name, formatted_contents
-  end
-
-  # Intended for use with indented heredocs.
-  # taken from Ruby Tapas:
-  # https://rubytapas.dpdcart.com/subscriber/post?id=616#files
-  def unindent(s)
-    s.gsub(/^#{s.scan(/^[ \t]+(?=\S)/).min}/, "")
   end
 end
 

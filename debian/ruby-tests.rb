@@ -60,6 +60,10 @@ else
 end
 
 ENV['NO_COVERAGE'] = 'yes'
+# disable for now error highlighting with ruby3.1 (#1019664)
+if RUBY_VERSION.to_f >= 3.1
+  ENV['RUBYOPT'] = "#{ENV['RUBYOPT']} --disable-error_highlight"
+end
 
 failed = []
 LIBS.each do |lib|

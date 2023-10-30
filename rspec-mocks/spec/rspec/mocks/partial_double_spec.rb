@@ -81,10 +81,15 @@ module RSpec
         expect(object.foobar(:key => "value")).to equal(1)
       end
 
-      it "can accept an inner hash as a message argument" do
-        hash = {:a => {:key => "value"}}
-        expect(object).to receive(:foobar).with(:key => "value").and_return(1)
-        expect(object.foobar(hash[:a])).to equal(1)
+      if RSpec::Support::RubyFeatures.required_kw_args_supported?
+        # Use eval to avoid syntax error on 1.8 and 1.9
+        binding.eval(<<-CODE, __FILE__, __LINE__)
+        it "can accept an inner hash as a message argument" do
+          hash = {:a => {:key => "value"}}
+          expect(object).to receive(:foobar).with(:key => "value").and_return(1)
+          expect(object.foobar(**hash[:a])).to equal(1)
+        end
+        CODE
       end
 
       it "can create a positive message expectation" do
@@ -610,6 +615,20 @@ module RSpec
 
             subclass = Class.new(klass) do
               private_class_method :new
+            end
+
+            prevents(/arguments/) { allow(subclass).to receive(:new).with(1) }
+            allow(subclass).to receive(:new).with(1, 2)
+          end
+        end
+
+        context "on a class with a twice-aliased `new`" do
+          it 'uses the method signature from `#initialize` for arg verification', :if => (RUBY_VERSION.to_i >= 3) do
+            subclass = Class.new(klass) do
+              class << self
+                alias_method :_new, :new
+                alias_method :new, :_new
+              end
             end
 
             prevents(/arguments/) { allow(subclass).to receive(:new).with(1) }

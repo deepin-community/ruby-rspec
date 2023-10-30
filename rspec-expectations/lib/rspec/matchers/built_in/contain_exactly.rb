@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      # rubocop:disable ClassLength
+      # rubocop:disable Metrics/ClassLength
       # @api private
       # Provides the implementation for `contain_exactly` and `match_array`.
       # Not intended to be instantiated directly.
@@ -29,6 +29,14 @@ module RSpec
         def description
           list = EnglishPhrasing.list(surface_descriptions_in(expected))
           "contain exactly#{list}"
+        end
+
+        def matches?(actual)
+          @pairings_maximizer = nil
+          @best_solution = nil
+          @extra_items = nil
+          @missing_items = nil
+          super(actual)
         end
 
       private
@@ -296,7 +304,7 @@ module RSpec
           end
         end
       end
-      # rubocop:enable ClassLength
+      # rubocop:enable Metrics/ClassLength
     end
   end
 end

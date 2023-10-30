@@ -13,6 +13,9 @@ RSpec.describe RSpec do
   # JRuby appears to not respect `--disable=gem` so rubygems also gets loaded.
   allowed_loaded_features << /rubygems/ if RSpec::Support::Ruby.jruby?
 
+  # Truffleruby cext files
+  allowed_loaded_features << /\/truffle\/cext/ if RSpec::Support::Ruby.truffleruby?
+
   disable_autorun_code =
     if RSpec::Support::OS.windows?
       # On Windows, the "redefine autorun" approach results in a different
@@ -126,6 +129,20 @@ RSpec.describe RSpec do
 
       RSpec.current_example = example
       expect(RSpec.current_example).to be(example)
+    end
+  end
+
+  describe ".current_scope" do
+    before :context do
+      expect(RSpec.current_scope).to eq(:before_context_hook)
+    end
+
+    before do
+      expect(RSpec.current_scope).to eq(:before_example_hook)
+    end
+
+    it "returns :example inside an example" do
+      expect(RSpec.current_scope).to eq(:example)
     end
   end
 

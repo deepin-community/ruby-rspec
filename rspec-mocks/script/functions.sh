@@ -1,4 +1,4 @@
-# This file was generated on 2021-01-22T20:05:01+00:00 from the rspec-dev repo.
+# This file was generated on 2022-09-08T12:42:04+01:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -90,6 +90,7 @@ function run_spec_suite_for {
       unset BUNDLE_GEMFILE
       bundle_install_flags=`cat .github/workflows/ci.yml | grep "bundle install" | sed 's/.* bundle install//'`
       travis_retry eval "(unset RUBYOPT; exec bundle install $bundle_install_flags)"
+      travis_retry eval "(unset RUBYOPT; exec bundle binstubs --all)"
       run_specs_and_record_done
       popd
     else
@@ -139,10 +140,7 @@ function check_binstubs {
     echo "  $ bundle binstubs$gems"
     echo
     echo "  # To binstub all gems"
-    echo "  $ bundle install --binstubs"
-    echo
-    echo "  # To binstub all gems and avoid loading bundler"
-    echo "  $ bundle install --binstubs --standalone"
+    echo "  $ bundle binstubs --all"
   fi
 
   return $success
@@ -194,6 +192,9 @@ function run_all_spec_suites {
   fold "rspec-expectations specs" run_spec_suite_for "rspec-expectations"
   fold "rspec-mocks specs" run_spec_suite_for "rspec-mocks"
   if rspec_rails_compatible; then
+    if ! is_ruby_27_plus; then
+      export RAILS_VERSION='~> 6.1.0'
+    fi
     fold "rspec-rails specs" run_spec_suite_for "rspec-rails"
   fi
 

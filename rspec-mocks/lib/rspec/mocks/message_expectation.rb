@@ -53,7 +53,7 @@ module RSpec
       # etc.
       #
       # If the message is received more times than there are values, the last
-      # value is received for every subsequent call.
+      # value is returned for every subsequent call.
       #
       # @return [nil] No further chaining is supported after this.
       # @example
@@ -85,6 +85,48 @@ module RSpec
         nil
       end
 
+      # Tells the object to invoke a Proc when it receives the message. Given
+      # more than one value, the result of the first Proc is returned the first
+      # time the message is received, the result of the second Proc is returned
+      # the next time, etc, etc.
+      #
+      # If the message is received more times than there are Procs, the result of
+      # the last Proc is returned for every subsequent call.
+      #
+      # @return [nil] No further chaining is supported after this.
+      # @example
+      #   allow(api).to receive(:get_foo).and_invoke(-> { raise ApiTimeout })
+      #   api.get_foo # => raises ApiTimeout
+      #   api.get_foo # => raises ApiTimeout
+      #
+      #   allow(api).to receive(:get_foo).and_invoke(-> { raise ApiTimeout }, -> { raise ApiTimeout }, -> { :a_foo })
+      #   api.get_foo # => raises ApiTimeout
+      #   api.get_foo # => rasies ApiTimeout
+      #   api.get_foo # => :a_foo
+      #   api.get_foo # => :a_foo
+      #   api.get_foo # => :a_foo
+      #   # etc
+      def and_invoke(first_proc, *procs)
+        raise_already_invoked_error_if_necessary(__method__)
+        if negative?
+          raise "`and_invoke` is not supported with negative message expectations"
+        end
+
+        if block_given?
+          raise ArgumentError, "Implementation blocks aren't supported with `and_invoke`"
+        end
+
+        procs.unshift(first_proc)
+        if procs.any? { |p| !p.respond_to?(:call) }
+          raise ArgumentError, "Arguments to `and_invoke` must be callable."
+        end
+
+        @expected_received_count = [@expected_received_count, procs.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
+        self.terminal_implementation_action = AndInvokeImplementation.new(procs)
+
+        nil
+      end
+
       # Tells the object to delegate to the original unmodified method
       # when it receives the message.
       #
@@ -97,9 +139,12 @@ module RSpec
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
-        wrap_original(__method__) do |original, *args, &block|
-          original.call(*args, &block)
+        block = lambda do |original, *args, &b|
+          original.call(*args, &b)
         end
+        block = block.ruby2_keywords if block.respond_to?(:ruby2_keywords)
+
+        wrap_original(__method__, &block)
       end
 
       # Decorates the stubbed method with the supplied block. The original
@@ -322,6 +367,7 @@ module RSpec
         @argument_list_matcher = ArgumentListMatcher.new(*args)
         self
       end
+      ruby2_keywords(:with) if respond_to?(:ruby2_keywords, true)
 
       # Expect messages to be received in a specific order.
       #
@@ -360,7 +406,6 @@ module RSpec
       # some collaborators it delegates to for this stuff but for now this was
       # the simplest way to split the public from private stuff to make it
       # easier to publish the docs for the APIs we want published.
-      # rubocop:disable Metrics/ModuleLength
       module ImplementationDetails
         attr_accessor :error_generator, :implementation
         attr_reader :message
@@ -418,18 +463,22 @@ module RSpec
         def matches?(message, *args)
           @message == message && @argument_list_matcher.args_match?(*args)
         end
+        ruby2_keywords :matches? if respond_to?(:ruby2_keywords, true)
 
         def safe_invoke(parent_stub, *args, &block)
           invoke_incrementing_actual_calls_by(1, false, parent_stub, *args, &block)
         end
+        ruby2_keywords :safe_invoke if respond_to?(:ruby2_keywords, true)
 
         def invoke(parent_stub, *args, &block)
           invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
         end
+        ruby2_keywords :invoke if respond_to?(:ruby2_keywords, true)
 
         def invoke_without_incrementing_received_count(parent_stub, *args, &block)
           invoke_incrementing_actual_calls_by(0, true, parent_stub, *args, &block)
         end
+        ruby2_keywords :invoke_without_incrementing_received_count if respond_to?(:ruby2_keywords, true)
 
         def negative?
           @expected_received_count == 0 && !@at_least
@@ -578,6 +627,7 @@ module RSpec
             @actual_received_count += increment
           end
         end
+        ruby2_keywords :invoke_incrementing_actual_calls_by if respond_to?(:ruby2_keywords, true)
 
         def has_been_invoked?
           @actual_received_count > 0
@@ -635,7 +685,6 @@ module RSpec
           nil
         end
       end
-      # rubocop:enable Metrics/ModuleLength
 
       include ImplementationDetails
     end
@@ -683,6 +732,24 @@ module RSpec
       end
     end
 
+    # Handles the implementation of an `and_invoke` implementation.
+    # @private
+    class AndInvokeImplementation
+      def initialize(procs_to_invoke)
+        @procs_to_invoke = procs_to_invoke
+      end
+
+      def call(*args, &block)
+        proc = if @procs_to_invoke.size > 1
+                 @procs_to_invoke.shift
+               else
+                 @procs_to_invoke.first
+               end
+
+        proc.call(*args, &block)
+      end
+    end
+
     # Represents a configured implementation. Takes into account
     # any number of sub-implementations.
     # @private
@@ -694,6 +761,7 @@ module RSpec
           action.call(*args, &block)
         end.last
       end
+      ruby2_keywords :call if respond_to?(:ruby2_keywords, true)
 
       def present?
         actions.any?
@@ -739,6 +807,7 @@ module RSpec
       def call(*args, &block)
         @block.call(@method, *args, &block)
       end
+      ruby2_keywords :call if respond_to?(:ruby2_keywords, true)
 
     private
 

@@ -1,5 +1,65 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.2...main)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.1...3-12-maintenance)
+
+### 3.12.1 / 2022-12-10
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.0...v3.12.1)
+
+Bug Fixes:
+
+* Remove empty diff marker when a diff only contains console codes. (Jon Rowe, #1506)
+* Show keyword vs hash diff marker when arguments are not `==` (Jon Rowe, #1506)
+* Change check to detect frozen objects to rescue errors rather than
+  pre-empting by checking `frozen?` due to some objects mis-behaving.
+  (Keegan Roth, #1401)
+* Prevent unfulfilled expectations using `expect_any_instance_of` across a class
+  inheritance boundary from raising rather than failing. (Jon Rowe, #1496)
+* Prevent a misleading error message when using `allow(...).not_to` with
+  unsupported matchers. (Phil Pirozhkov, #1503)
+
+### 3.12.0 / 2022-10-26
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.2...v3.12.0)
+
+Enhancements:
+
+* Improve diff output when diffing keyword arguments against hashes.
+  (Jean Boussier, #1461)
+
+### 3.11.2 / 2022-10-25
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...v3.11.2)
+
+Bug Fixes:
+
+* Use the original implementation of `Class.new` to detect overridden definitions
+  of `new` rather than the owner, fixing detection of "double aliased" methods
+  in Ruby 3 and above. (Benoit Daloze, #1470, #1476)
+* Support keyword argument semantics when constraining argument expectations using
+  `with` on Ruby 3.0+ with `instance_double` (Andrii Malyshko, #1473)
+
+### 3.11.1 / 2022-03-31
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...v3.11.1)
+
+Bug Fixes:
+
+* Add extra `ruby2_keywords` calls to properly designate methods using
+ `*args` to pass keyword around, fixes an issue with TruffleRuby.
+ (Benoit Daloze, #1464)
+
+### 3.11.0 / 2022-02-09
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.3...v3.11.0)
+
+Enhancements:
+
+* Add `and_invoke` implementation for configuring responses to `receive`
+  (and `receive_messages`) with multiple callable objects. (Kyle Smith, #1411)
+
+### 3.10.3 / 2022-01-28
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.2...v3.10.3)
+
+Bug Fixes:
+
+* Suppress warning by setting `$VERBOSE` to nil. (Nobuyoshi Nakada, #1414)
+* Support keyword argument semantics when constraining argument expectations using
+  `with` on Ruby 3.0+ (Yusuke Endoh, #1394)
 
 ### 3.10.2 / 2021-01-27
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.1...v3.10.2)

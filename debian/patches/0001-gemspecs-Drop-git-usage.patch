@@ -10,8 +10,6 @@ Subject: gemspecs: Drop git usage
  rspec/rspec.gemspec                           | 6 +++---
  5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/rspec-core/rspec-core.gemspec b/rspec-core/rspec-core.gemspec
-index a778f04..69c9f0f 100644
 --- a/rspec-core/rspec-core.gemspec
 +++ b/rspec-core/rspec-core.gemspec
 @@ -21,11 +21,11 @@ Gem::Specification.new do |s|
@@ -28,8 +26,6 @@ index a778f04..69c9f0f 100644
    s.rdoc_options     = ["--charset=UTF-8"]
    s.require_path     = "lib"
  
-diff --git a/rspec-expectations/rspec-expectations.gemspec b/rspec-expectations/rspec-expectations.gemspec
-index f4e7867..105aa30 100644
 --- a/rspec-expectations/rspec-expectations.gemspec
 +++ b/rspec-expectations/rspec-expectations.gemspec
 @@ -20,7 +20,7 @@ Gem::Specification.new do |s|
@@ -41,8 +37,6 @@ index f4e7867..105aa30 100644
    s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
    s.test_files       = []
    s.rdoc_options     = ["--charset=UTF-8"]
-diff --git a/rspec-mocks/rspec-mocks.gemspec b/rspec-mocks/rspec-mocks.gemspec
-index 9fd5e9a..fd93b2c 100644
 --- a/rspec-mocks/rspec-mocks.gemspec
 +++ b/rspec-mocks/rspec-mocks.gemspec
 @@ -21,7 +21,7 @@ Gem::Specification.new do |s|
@@ -54,8 +48,6 @@ index 9fd5e9a..fd93b2c 100644
    s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
    s.test_files       = []
    s.rdoc_options     = ["--charset=UTF-8"]
-diff --git a/rspec-support/rspec-support.gemspec b/rspec-support/rspec-support.gemspec
-index c32cd57..eb83291 100644
 --- a/rspec-support/rspec-support.gemspec
 +++ b/rspec-support/rspec-support.gemspec
 @@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
@@ -67,12 +59,10 @@ index c32cd57..eb83291 100644
    spec.files         += %w[README.md LICENSE.md Changelog.md]
    spec.test_files    = []
    spec.rdoc_options  = ["--charset=UTF-8"]
-diff --git a/rspec/rspec.gemspec b/rspec/rspec.gemspec
-index a3e7064..9bf1aed 100644
 --- a/rspec/rspec.gemspec
 +++ b/rspec/rspec.gemspec
 @@ -21,10 +21,10 @@ Gem::Specification.new do |s|
-     'source_code_uri'   => 'https://github.com/rspec/rspec',
+     'source_code_uri'   => 'https://github.com/rspec/rspec-metagem',
    }
  
 -  s.files            = `git ls-files -- lib/*`.split("\n")
