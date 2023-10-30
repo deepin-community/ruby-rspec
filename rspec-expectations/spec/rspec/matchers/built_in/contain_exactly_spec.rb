@@ -60,7 +60,7 @@ RSpec.describe "should =~ array", :uses_should do
 
   context "when the array undefines `=~`" do
     it 'still works' do
-      array_klass = Class.new(Array) { undef =~ }
+      array_klass = Class.new(Array) { undef =~ if respond_to?(:=~) }
       array = array_klass.new([1, 2])
 
       array.should =~ [1, 2]
@@ -148,7 +148,7 @@ RSpec.describe "using contain_exactly with expect" do
 end
 
 RSpec.describe "expect(array).to contain_exactly(*other_array)" do
-  it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
+  it_behaves_like "an RSpec value matcher", :valid_value => [1, 2], :invalid_value => [1] do
     let(:matcher) { contain_exactly(2, 1) }
   end
 
@@ -470,6 +470,32 @@ RSpec.describe "Composing `contain_exactly` with other matchers" do
       )
     end
 
+  end
+end
+
+RSpec.describe "Reusing a matcher that memoizes state" do
+  require "rspec/matchers/fail_matchers"
+
+  it "works properly in spite of the memoization" do
+    matcher = contain_exactly(eq(1))
+
+    expect {
+      expect([2]).to matcher
+    }.to fail_including(<<-MESSAGE)
+expected collection contained:  [(eq 1)]
+actual collection contained:    [2]
+the missing elements were:      [(eq 1)]
+the extra elements were:        [2]
+    MESSAGE
+
+    expect {
+      expect([3]).to matcher
+    }.to fail_including(<<-MESSAGE)
+expected collection contained:  [(eq 1)]
+actual collection contained:    [3]
+the missing elements were:      [(eq 1)]
+the extra elements were:        [3]
+    MESSAGE
   end
 end
 

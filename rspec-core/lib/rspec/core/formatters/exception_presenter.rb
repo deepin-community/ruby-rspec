@@ -55,7 +55,7 @@ module RSpec
                 cause << "  #{line}"
               end
 
-              unless last_cause.backtrace.empty?
+              unless last_cause.backtrace.nil? || last_cause.backtrace.empty?
                 cause << ("  #{backtrace_formatter.format_backtrace(last_cause.backtrace, example.metadata).first}")
               end
             end
@@ -241,6 +241,10 @@ module RSpec
         def find_failed_line
           line_regex = RSpec.configuration.in_project_source_dir_regex
           loaded_spec_files = RSpec.configuration.loaded_spec_files
+
+          exception_backtrace.reject! do |line|
+            line.start_with?("<internal:")
+          end
 
           exception_backtrace.find do |line|
             next unless (line_path = line[/(.+?):(\d+)(|:\d+)/, 1])

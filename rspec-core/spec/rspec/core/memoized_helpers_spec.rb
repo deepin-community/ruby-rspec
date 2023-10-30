@@ -520,10 +520,28 @@ module RSpec::Core
       end.to raise_error(/#let or #subject called without a block/)
     end
 
-    it 'raises an error when attempting to define a reserved method name' do
+    it 'raises an error when attempting to define a reserved name #initialize' do
       expect do
-        RSpec.describe { let(:initialize) { true }}
-      end.to raise_error(/#let or #subject called with a reserved name #initialize/)
+        RSpec.describe { let(:initialize) { true } }
+      end.to raise_error(/#let or #subject called with reserved name `initialize`/)
+    end
+
+    it 'raises an error when attempting to define a reserved name #initialize as a string' do
+      expect do
+        RSpec.describe { let('initialize') { true } }
+      end.to raise_error(/#let or #subject called with reserved name `initialize`/)
+    end
+
+    it 'raises an error when attempting to define a reserved name #to_s' do
+      expect do
+        RSpec.describe { let(:to_s) { true } }
+      end.to raise_error(/#let or #subject called with reserved name `to_s`/)
+    end
+
+    it 'raises an error when attempting to define a reserved name #to_s as a string' do
+      expect do
+        RSpec.describe { let('to_s') { true } }
+      end.to raise_error(/#let or #subject called with reserved name `to_s`/)
     end
 
     let(:a_value) { "a string" }
@@ -627,6 +645,28 @@ module RSpec::Core
         subject { 123 }
         it_should_behave_like 'a subject'
       end
+    end
+  end
+
+  RSpec.describe 'implicit block expectation syntax' do
+    matcher :block_matcher do
+      match { |actual| true }
+      supports_block_expectations
+      def supports_value_expectations?
+        false
+      end
+    end
+
+    subject { 'value or a Proc' }
+
+    it '`should` prints a deprecation warning when given a value' do
+      expect_warn_deprecation(/The implicit block expectation syntax is deprecated, you should pass/)
+      expect { should block_matcher }.not_to raise_error
+    end
+
+    it '`should_not` prints a deprecation warning when given a value' do
+      expect_warn_deprecation(/The implicit block expectation syntax is deprecated, you should pass/)
+      expect { should_not block_matcher }.to raise_error(Exception)
     end
   end
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# This file was generated on 2020-12-27T14:29:49+00:00 from the rspec-dev repo.
+# This file was generated on 2022-09-08T12:42:03+01:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 set -e
@@ -24,12 +24,9 @@ if documentation_enforced; then
   fold "doc check" check_documentation_coverage
 fi
 
-if style_and_lint_enforced; then
-  fold "rubocop" check_style_and_lint
-fi
-
 if supports_cross_build_checks; then
   fold "one-by-one specs" run_specs_one_by_one
+  export NO_COVERAGE=true
   run_all_spec_suites
 else
   echo "Skipping the rest of the build on non-MRI rubies"

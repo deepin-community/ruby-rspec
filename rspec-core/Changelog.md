@@ -1,6 +1,39 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.12.0...3-12-maintenance)
+
+### 3.12.0 / 2022-10-26
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.11.0...v3.12.0)
+
+* No changes, released to support other gems.
+
+### 3.11.0 / 2022-02-09
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.10.2...v3.11.0)
+
+Enhancements:
+
+* Improve pluralisation of words ending with `s` (like process). (Joshua Pinter, #2779)
+* Add ordering by file modification time (most recent first). (Matheus Richard, #2778)
+* Add `to_s` to reserved names for #let and #subject. (Nick Flückiger, #2886)
+* Introduce `RSpec.current_scope` to expose the current scope in which
+  RSpec is executing. e.g. `:before_example_hook`, `:example` etc. (@odinhb, #2895)
+* Add named bold colours as options for custom colours. (#2913, #2914)
+* Warn when (but not prevent) a `SystemExit` occurs. (Jared Beck, #2926)
+
+### 3.10.2 / 2022-01-27
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.10.1...v3.10.2)
+
+Bug fixes:
+
+* Ensure bisect communication uses consistent encoding. (Mike Jarema, #2852)
+* Fix exception presenter when the root cause exception has nil backtrace.
+  (Zinovyev Ivan, #2903)
+* Fix `inspect` output of `RSpec::Core::Example::Procsy` to namespace correctly.
+  (Keiko Kaneko, #2915)
+* Ensure formatters not exposing `#output` will not crash duplicate check.
+  (@niceking, #2916)
+
 ### 3.10.1 / 2020-12-27
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.10.0...v3.10.1)
-
 
 Bug fixes:
 
@@ -17,7 +50,7 @@ Enhancements:
 * Add configuration for an error exit code (to disambiguate errored builds from failed builds
   by exit status). (Dana Sherson, #2749)
 
-# 3.9.3 / 2020-09-30
+### 3.9.3 / 2020-09-30
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.9.2...v3.9.3)
 
 Bug Fixes:

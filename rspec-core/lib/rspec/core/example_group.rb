@@ -602,6 +602,7 @@ module RSpec
 
         should_run_context_hooks = descendant_filtered_examples.any?
         begin
+          RSpec.current_scope = :before_context_hook
           run_before_context_hooks(new('before(:context) hook')) if should_run_context_hooks
           result_for_this_group = run_examples(reporter)
           results_for_descendants = ordering_strategy.order(children).map { |child| child.run(reporter) }.all?
@@ -614,6 +615,7 @@ module RSpec
           RSpec.world.wants_to_quit = true if reporter.fail_fast_limit_met?
           false
         ensure
+          RSpec.current_scope = :after_context_hook
           run_after_context_hooks(new('after(:context) hook')) if should_run_context_hooks
           reporter.example_group_finished(self)
         end
@@ -701,6 +703,7 @@ module RSpec
         end
       end
 
+      # @private
       def initialize(inspect_output=nil)
         @__inspect_output = inspect_output || '(no description provided)'
         super() # no args get passed
@@ -782,6 +785,7 @@ module RSpec
       # @return [String] the location where the shared example was included
       attr_reader :inclusion_location
 
+      # @private
       def initialize(shared_group_name, inclusion_location)
         @shared_group_name  = shared_group_name
         @inclusion_location = inclusion_location

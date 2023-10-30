@@ -502,7 +502,8 @@ module RSpec
       # @private
       attr_reader :backtrace_formatter, :ordering_manager, :loaded_spec_files
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/MethodLength
 
       # Build an object to store runtime configuration options and set defaults
       def initialize
@@ -561,7 +562,8 @@ module RSpec
 
         define_built_in_hooks
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength
 
       # @private
       #
@@ -2063,10 +2065,13 @@ module RSpec
         return yield if dry_run?
 
         begin
+          RSpec.current_scope = :before_suite_hook
           run_suite_hooks("a `before(:suite)` hook", @before_suite_hooks)
           yield
         ensure
+          RSpec.current_scope = :after_suite_hook
           run_suite_hooks("an `after(:suite)` hook", @after_suite_hooks)
+          RSpec.current_scope = :suite
         end
       end
 
@@ -2119,6 +2124,14 @@ module RSpec
         relative_file = Metadata.relative_path(file)
         reporter.notify_non_example_exception(ex, "An error occurred while loading #{relative_file}.")
         RSpec.world.wants_to_quit = true
+      rescue SystemExit => ex
+        relative_file = Metadata.relative_path(file)
+        reporter.notify_non_example_exception(
+          ex,
+          "While loading #{relative_file} an `exit` / `raise SystemExit` occurred, RSpec will now quit."
+        )
+        RSpec.world.rspec_is_quitting = true
+        raise ex
       end
 
       def handle_suite_hook(scope, meta)

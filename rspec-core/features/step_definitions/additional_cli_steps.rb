@@ -76,10 +76,16 @@ Then /^the output should not contain any error backtraces$/ do
 end
 
 # This step can be generalized if it's ever used to test other colors
-Then /^the failing example is printed in magenta$/ do
+Then /^the failing example is printed (?:wrapped )?in (.*)$/ do |color|
+  code =
+    case color
+    when "magenta" then "\e[35m"
+    when /"(.*)"/ then "\e[#{$1}m"
+    end
+
   # \e[35m = enable magenta
   # \e[0m  = reset colors
-  expect(all_output).to include("\e[35m" + "F" + "\e[0m")
+  expect(all_output).to include(code + "F" + "\e[0m")
 end
 
 Then /^the output from `([^`]+)` should contain "(.*?)"$/  do |cmd, expected_output|
@@ -108,7 +114,7 @@ Given(/^a vendored gem named "(.*?)" containing a file named "(.*?)" with:$/) do
   set_environment_variable('RUBYOPT', ENV['RUBYOPT'] + " -I#{gem_dir}/lib")
 end
 
-When "I accept the recommended settings by removing `=begin` and `=end` from `spec/spec_helper.rb`" do
+When('I accept the recommended settings by removing `=begin` and `=end` from `spec_helper.rb`') do
   cd('.') do
     spec_helper = File.read("spec/spec_helper.rb")
     expect(spec_helper).to include("=begin", "=end")
@@ -171,6 +177,10 @@ Then(/^bisect should (succeed|fail) with output like:$/) do |succeed, expected_o
 
   expected = normalize_durations(expected_output)
   actual   = normalize_durations(last_process.stdout).sub(/\n+\Z/, '')
+
+  if !RSpec::Support::RubyFeatures.fork_supported?
+    expected.gsub!('runner: :fork', 'runner: :shell')
+  end
 
   if expected.include?("# ...")
     expected_start, expected_end = expected.split("# ...")

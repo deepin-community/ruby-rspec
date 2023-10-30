@@ -13,7 +13,7 @@ module RSpec
           @caught_symbol = @caught_arg = nil
         end
 
-        # rubocop:disable MethodLength
+        # rubocop:disable Metrics/MethodLength
         # @private
         def matches?(given_proc)
           @block = given_proc
@@ -48,7 +48,7 @@ module RSpec
           rescue => other_exception
             raise
           ensure
-            # rubocop:disable EnsureReturn
+            # rubocop:disable Lint/EnsureReturn
             unless other_exception
               if @expected_symbol.nil?
                 return !!@caught_symbol
@@ -60,10 +60,10 @@ module RSpec
                 end
               end
             end
-            # rubocop:enable EnsureReturn
+            # rubocop:enable Lint/EnsureReturn
           end
         end
-        # rubocop:enable MethodLength
+        # rubocop:enable Metrics/MethodLength
 
         def does_not_match?(given_proc)
           !matches?(given_proc) && Proc === given_proc
@@ -94,6 +94,12 @@ module RSpec
           true
         end
 
+        # @api private
+        def supports_value_expectations?
+          false
+        end
+
+        # @api private
         def expects_call_stack_jump?
           true
         end

@@ -92,8 +92,9 @@ repack-sources:
 		mkdir -p ruby-rspec_$(DEB_VERSION_UPSTREAM).orig/$$x; \
 		tar -C ruby-rspec_$(DEB_VERSION_UPSTREAM).orig/$$x -xzf ../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig-$$x.tar.gz --strip-components=1; \
 		done
-	GZIP=--best tar -cz --owner root --group root --mode a+rX -f \
-        ../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig.tar.gz ruby-rspec_$(DEB_VERSION_UPSTREAM).orig
+	tar -c --owner root --group root --mode a+rX -f \
+        ../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig.tar ruby-rspec_$(DEB_VERSION_UPSTREAM).orig
+	gzip --best ../ruby-rspec_$(DEB_VERSION_UPSTREAM).orig.tar
 	rm -rf ruby-rspec_$(DEB_VERSION_UPSTREAM).orig
 
 %:

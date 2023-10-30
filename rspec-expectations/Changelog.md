@@ -1,3 +1,57 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.12.1...3-12-maintenance)
+
+### 3.12.1 / 2022-12-16
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.12.0...v3.12.1)
+
+Bug Fixes:
+
+* Pass keyword arguments through to aliased (and thus negated) matchers. (Jon Rowe, #1394)
+* When handling failures in an aggregated_failures block (or example) prevent
+  the failure list leaking out. (Maciek Rząsa, #1392)
+
+### 3.12.0 / 2022-10-26
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.11.1...v3.12.0)
+
+Enhancements:
+
+* Add `an_array_matching` alias for `match_array` to improve readability as an argument
+  matcher. (Mark Schneider, #1361)
+
+### 3.11.1 / 2022-09-12
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.11.0...v3.11.1)
+
+Bug Fixes:
+
+* Allow the `contain_exactly` matcher to be reused by resetting its
+  internals on `matches?` (@bclayman-sq, #1326)
+* Using the exist matcher on `FileTest` no longer produces a deprecation warning.
+  (Ryo Nakamura, #1383)
+
+### 3.11.0 / 2022-02-09
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.10.2...v3.11.0)
+
+Enhancements:
+
+* Return `true` from `aggregate_failures` when no exception occurs. (Jon Rowe, #1225)
+
+Deprecations:
+
+* Print a deprecation message when using the implicit block expectation syntax.
+  (Phil Pirozhkov, #1139)
+
+### 3.10.2 / 2022-01-14
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.10.1...v3.10.2)
+
+Bug Fixes:
+
+* Fix support for dynamic matchers for expectation target checks (Phil Pirozhkov, #1294)
+* Fix `expect(array).to include(hash).times`, previously this would fail due to
+  matching the entire array as a single hash, rather than a member of the hash.
+  (Slava Kardakov, #1322)
+* Ensure `raise_error` matches works with the `error_highlight` option from Ruby 3.1.
+  (Peter Goldstein, #1339)
+
 ### 3.10.1 / 2020-12-27
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.10.0...v3.10.1)
 
@@ -113,7 +167,7 @@ Bug Fixes:
 * Prevent composed `all` matchers from leaking into their siblings leading to duplicate
   failures. (Jamie English, #1086)
 * Prevent objects which change their hash on comparison from failing change checks.
-  (Phil Pirozhkov, #1110)
+  (Phil Pirozhkov, #1100)
 * Issue an `ArgumentError` rather than a `NoMethodError` when `be_an_instance_of` and
   `be_kind_of` matchers encounter objects not supporting those methods.
   (Taichi Ishitani, #1107)

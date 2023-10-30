@@ -46,17 +46,32 @@ module RSpec
         @expected_args = expected_args
         ensure_expected_args_valid!
       end
+      ruby2_keywords :initialize if respond_to?(:ruby2_keywords, true)
 
       # @api public
-      # @param [Array] args
+      # @param [Array] actual_args
       #
       # Matches each element in the `expected_args` against the element in the same
       # position of the arguments passed to `new`.
       #
       # @see #initialize
-      def args_match?(*args)
-        Support::FuzzyMatcher.values_match?(resolve_expected_args_based_on(args), args)
+      def args_match?(*actual_args)
+        expected_args = resolve_expected_args_based_on(actual_args)
+
+        return false if expected_args.size != actual_args.size
+
+        if RUBY_VERSION >= "3"
+          # if both arguments end with Hashes, and if one is a keyword hash and the other is not, they don't match
+          if Hash === expected_args.last && Hash === actual_args.last
+            if !Hash.ruby2_keywords_hash?(actual_args.last) && Hash.ruby2_keywords_hash?(expected_args.last)
+              return false
+            end
+          end
+        end
+
+        Support::FuzzyMatcher.values_match?(expected_args, actual_args)
       end
+      ruby2_keywords :args_match? if respond_to?(:ruby2_keywords, true)
 
       # @private
       # Resolves abstract arg placeholders like `no_args` and `any_args` into

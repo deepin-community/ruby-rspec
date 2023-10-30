@@ -2,6 +2,9 @@ module RSpec
   module Mocks
     # @private
     class MethodDouble
+      # @private TODO: drop in favor of FrozenError in ruby 2.5+
+      FROZEN_ERROR_MSG = /can't modify frozen/
+
       # @private
       attr_reader :method_name, :object, :expectations, :stubs, :method_stasher
 
@@ -63,11 +66,21 @@ module RSpec
           define_method(method_name) do |*args, &block|
             method_double.proxy_method_invoked(self, *args, &block)
           end
+          # This can't be `if respond_to?(:ruby2_keywords, true)`,
+          # see https://github.com/rspec/rspec-mocks/pull/1385#issuecomment-755340298
           ruby2_keywords(method_name) if Module.private_method_defined?(:ruby2_keywords)
           __send__(visibility, method_name)
         end
 
         @method_is_proxied = true
+      rescue RuntimeError, TypeError => e
+        # TODO: drop in favor of FrozenError in ruby 2.5+
+        #  RuntimeError (and FrozenError) for ruby 2.x
+        #  TypeError for ruby 1.x
+        if (defined?(FrozenError) && e.is_a?(FrozenError)) || FROZEN_ERROR_MSG === e.message
+          raise ArgumentError, "Cannot proxy frozen objects, rspec-mocks relies on proxies for method stubbing and expectations."
+        end
+        raise
       end
 
       # The implementation of the proxied method. Subclasses may override this
@@ -77,10 +90,10 @@ module RSpec
       def proxy_method_invoked(_obj, *args, &block)
         @proxy.message_received method_name, *args, &block
       end
+      ruby2_keywords :proxy_method_invoked if respond_to?(:ruby2_keywords, true)
 
       # @private
       def restore_original_method
-        return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
         remove_method_from_definition_target
@@ -88,6 +101,14 @@ module RSpec
         restore_original_visibility
 
         @method_is_proxied = false
+      rescue RuntimeError, TypeError => e
+        # TODO: drop in favor of FrozenError in ruby 2.5+
+        #  RuntimeError (and FrozenError) for ruby 2.x
+        #  TypeError for ruby 1.x
+        if (defined?(FrozenError) && e.is_a?(FrozenError)) || FROZEN_ERROR_MSG === e.message
+          return show_frozen_warning
+        end
+        raise
       end
 
       # @private

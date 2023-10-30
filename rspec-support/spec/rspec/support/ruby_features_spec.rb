@@ -21,12 +21,12 @@ module RSpec
       end
 
       describe ".windows_file_path?" do
-        it "returns true when the file alt seperator is a colon" do
+        it "returns true when the file alt separator is a colon" do
           stub_const("File::ALT_SEPARATOR", "\\") unless OS.windows?
           expect(OS).to be_windows_file_path
         end
 
-        it "returns false when file alt seperator is not present" do
+        it "returns false when file alt separator is not present" do
           stub_const("File::ALT_SEPARATOR", nil) if OS.windows?
           expect(OS).to_not be_windows_file_path
         end
@@ -89,6 +89,10 @@ module RSpec
 
       specify "#required_kw_args_supported? exists" do
         RubyFeatures.required_kw_args_supported?
+      end
+
+      specify "distincts_kw_args_from_positional_hash?" do
+        RubyFeatures.distincts_kw_args_from_positional_hash?
       end
 
       specify "#supports_rebinding_module_methods? exists" do

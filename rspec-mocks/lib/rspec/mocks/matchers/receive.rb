@@ -13,7 +13,7 @@ module RSpec
           @recorded_customizations = []
         end
 
-        def name
+        def matcher_name
           "receive"
         end
 
@@ -62,6 +62,7 @@ module RSpec
             @recorded_customizations << ExpectationCustomization.new(method, args, block)
             self
           end
+          ruby2_keywords(method) if respond_to?(:ruby2_keywords, true)
         end
 
       private

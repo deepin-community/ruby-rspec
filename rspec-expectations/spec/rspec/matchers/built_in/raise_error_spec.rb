@@ -1,6 +1,10 @@
 RSpec.describe "expect { ... }.to raise_error" do
-  it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
-                                      :invalid_value => lambda { }) do
+  it_behaves_like "an RSpec block-only matcher" do
+    def valid_block
+      raise "boom"
+    end
+    def invalid_block
+    end
     let(:matcher) { raise_error Exception }
   end
 
@@ -241,7 +245,7 @@ RSpec.describe "expect { ... }.to raise_error(message)" do
   it "fails if any other error is raised with the wrong message" do
     expect do
       expect { raise NameError.new('blarg') }.to raise_error('blah')
-    end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
+    end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg/)
   end
 
   it 'includes the backtrace of any other error in the failure message' do
@@ -282,7 +286,7 @@ RSpec.describe "expect { ... }.to raise_error.with_message(message)" do
   it "fails if any other error is raised with the wrong message" do
     expect do
       expect { raise NameError.new('blarg') }.to raise_error.with_message('blah')
-    end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
+    end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg/)
   end
 end
 

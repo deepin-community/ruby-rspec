@@ -23,6 +23,7 @@ RSpec.describe 'Spec file load errors' do
 
     RSpec.configure do |c|
       c.filter_gems_from_backtrace "gems/aruba"
+      c.filter_gems_from_backtrace "gems/bundler"
       c.backtrace_exclusion_patterns << %r{/rspec-core/spec/} << %r{rspec_with_simplecov}
       c.failure_exit_code = failure_exit_code
       c.error_exit_code = error_exit_code
@@ -79,6 +80,39 @@ RSpec.describe 'Spec file load errors' do
       0 examples, 0 failures, 1 error occurred outside of examples
 
     EOS
+  end
+
+  it 'prints a warning when a helper file exits early' do
+    write_file_formatted "helper_with_exit.rb", "exit 999"
+
+    expect {
+      run_command "--require ./helper_with_exit.rb"
+    }.to raise_error(SystemExit)
+    output = normalize_durations(last_cmd_stdout)
+    # Remove extra line which is only shown on CRuby
+    output = output.sub("# ./helper_with_exit.rb:1:in `exit'\n", "")
+
+    if defined?(JRUBY_VERSION) && !JRUBY_VERSION.empty?
+      expect(output).to eq unindent(<<-EOS)
+
+        While loading ./helper_with_exit.rb an `exit` / `raise SystemExit` occurred, RSpec will now quit.
+        Failure/Error: Unable to find org/jruby/RubyKernel.java to read failed line
+
+        SystemExit:
+          exit
+        # ./helper_with_exit.rb:1#{spec_line_suffix}
+      EOS
+    else
+      expect(output).to eq unindent(<<-EOS)
+
+        While loading ./helper_with_exit.rb an `exit` / `raise SystemExit` occurred, RSpec will now quit.
+        Failure/Error: exit 999
+
+        SystemExit:
+          exit
+        # ./helper_with_exit.rb:1#{spec_line_suffix}
+      EOS
+    end
   end
 
   it 'nicely handles load-time errors in user spec files' do

@@ -1,3 +1,25 @@
+ruby-rspec (3.12.0c0e1m1s0-1) unstable; urgency=medium
+
+  * Team upload
+  * debian/rules: repack-sources: replace usage of GZIP with explicit gz invocation
+  * New upstream version 3.12.0c0e1m1s0
+    - fixes raise_error with ruby3.1 (Closes: #1019628)
+  * Refresh patches
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 27 Dec 2022 08:58:37 -0300
+
+ruby-rspec (3.10.0c1e1m2s3-2) unstable; urgency=medium
+
+  * Bump Standards-Version to 4.6.1 (no changes needed)
+  * Bump debhelper compatibility level to 13
+  * Fix test failures with ruby3.1
+    - Disable error highlighting with ruby3.1 when running tests
+      with --disable-error_highlight ruby option
+      (Closes: #1019664)
+    - Add patch to call correct interpreter in rspec-support 'shell out' specs
+
+ -- Cédric Boutillier <boutil@debian.org>  Wed, 30 Nov 2022 14:27:18 +0100
+
 ruby-rspec (3.10.0c1e1m2s3-1) unstable; urgency=medium
 
   * Team upload

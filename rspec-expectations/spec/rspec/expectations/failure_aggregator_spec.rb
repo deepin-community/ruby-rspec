@@ -10,6 +10,16 @@ module RSpec::Expectations
       }.not_to raise_error
     end
 
+    it 'returns true when no expectations fail' do
+      expect(
+        aggregate_failures do
+          expect(1).to be_odd
+          expect(2).to be_even
+          expect(3).to be_odd
+        end
+      ).to eq true
+    end
+
     it 'aggregates multiple failures into one exception that exposes all the failures' do
       expect {
         aggregate_failures('block label', :some => :metadata) do
@@ -255,6 +265,31 @@ module RSpec::Expectations
       end
     end
 
+    describe 'with MockExpectationError' do
+      it 'does not allow modifications of the failure list in the test example' do
+        expect {
+          aggregate_failures do
+            dbl = double
+            array = dbl.get(2)
+            array << :foo
+          end
+        }.to raise_error(
+          be_a(MultipleExpectationsNotMetError).and have_attributes(
+            :failures => [
+              be_a(RSpec::Mocks::MockExpectationError)
+            ],
+            :other_errors => [
+              # Checking only the class name, not the full message, because the hehaviour differes bettern Ruby 2 and 3.
+              # Ruby 3 uses #inspect in NoMethodError, while Ruby 2.x uses format that I can't override:
+              # NoMethodError (undefined method `<<' for #<RSpec::Expectations::FailureAggregator::AggregatedFailure:0x000055e4bac69ba8>)
+              # even if I override #to_s
+              be_a(NoMethodError).and(have_attributes(:message => /AggregatedFailure/))
+            ]
+          )
+        )
+      end
+    end
+
     describe "message formatting" do
       it "enumerates the failures with an index label, the path of each failure and a blank line in between" do
         expect {
@@ -429,6 +464,10 @@ module RSpec::Expectations
       elsif RSpec::Support::Ruby.mri?
         def exception_complement(block_levels)
           ""
+        end
+      elsif RSpec::Support::Ruby.truffleruby?
+        def exception_complement(block_levels)
+          ":in `block (#{block_levels} levels) in <module:Expectations>'"
         end
       elsif RUBY_VERSION > "2.0.0"
         def exception_complement(block_levels)

@@ -1,0 +1,23 @@
+--- a/rspec-support/spec/rspec/support/spec/shell_out_spec.rb
++++ b/rspec-support/spec/rspec/support/spec/shell_out_spec.rb
+@@ -4,17 +4,17 @@ RSpec.describe RSpec::Support::ShellOut,
+   include described_class
+ 
+   it 'shells out and returns stdout and stderr' do
+-    stdout, stderr, _ = shell_out("ruby", "-e", "$stdout.print 'yes'; $stderr.print 'no'")
++    stdout, stderr, _ = shell_out(RbConfig::ruby, "-e", "$stdout.print 'yes'; $stderr.print 'no'")
+     expect(stdout).to eq("yes")
+     expect(stderr).to eq("no")
+   end
+ 
+   it 'returns the exit status as the third argument' do
+-    _, _, good_status = shell_out("ruby", "-e", '3 + 3')
++    _, _, good_status = shell_out(RbConfig::ruby, "-e", '3 + 3')
+     expect(good_status.exitstatus).to eq(0)
+ 
+     unless RUBY_VERSION.to_f < 1.9 # except 1.8...
+-      _, _, bad_status = shell_out("ruby", "-e", 'boom')
++      _, _, bad_status = shell_out(RbConfig::ruby, "-e", 'boom')
+       expect(bad_status.exitstatus).to eq(1)
+     end
+   end
